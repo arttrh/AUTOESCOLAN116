@@ -1,11 +1,11 @@
 package br.com.senain116.autoescolan116.adapter.in.controller;
 
-import br.com.senain116.autoescolan116.adapter.in.controller.response.instrucao.DadosListagemInstrucao;
-import br.com.senain116.autoescolan116.application.core.usecase.AgendaDeInstrucoes;
 import br.com.senain116.autoescolan116.adapter.in.controller.request.instrucao.DadosAgendamento;
 import br.com.senain116.autoescolan116.adapter.in.controller.response.instrucao.DadosDetalhamentoAgendamento;
-import jakarta.transaction.Transactional;
+import br.com.senain116.autoescolan116.adapter.in.controller.response.instrucao.DadosListagemInstrucao;
+import br.com.senain116.autoescolan116.application.core.usecase.AgendaDeInstrucoes;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +31,7 @@ public class InstrucaoController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public Page<DadosListagemInstrucao> listarInstrucao(@PageableDefault(size = 10, sort = "name")Pageable paginacao){
+    public Page<DadosListagemInstrucao> listarInstrucao(@ParameterObject @PageableDefault(size = 10, sort = "name") Pageable paginacao) {
         return ResponseEntity.ok(agenda.listar(paginacao)).getBody();
     }
 
