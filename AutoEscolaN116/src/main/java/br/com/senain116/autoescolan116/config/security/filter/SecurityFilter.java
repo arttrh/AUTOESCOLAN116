@@ -3,19 +3,16 @@ package br.com.senain116.autoescolan116.config.security.filter;
 import br.com.senain116.autoescolan116.adapter.out.repository.entity.UsuarioEntity;
 import br.com.senain116.autoescolan116.adapter.out.repository.persistence.UsuarioJpaRepository;
 import br.com.senain116.autoescolan116.config.security.service.TokenService;
-import br.com.senain116.autoescolan116.application.port.out.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -37,12 +34,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             String subject = tokenService.getSubject(tokenJWT);
-            Optional <UsuarioEntity> usuario = repository.findByLogin(subject);
+            UsuarioEntity usuario = repository.findByLogin(subject).orElseThrow();
             UsernamePasswordAuthenticationToken authentication
-                    = new UsernamePasswordAuthenticationToken(
-                    usuario,
+                    = new UsernamePasswordAuthenticationToken
+                    (usuario,
                     null,
-                    usuario.get().getAuthorities()
+                            usuario.getAuthorities()
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
