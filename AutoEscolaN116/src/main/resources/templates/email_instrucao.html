@@ -5,109 +5,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificação de Instrução</title>
-    <style>
-        .ew { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background: #f5f5f5; padding: 24px; }
-        .ec { background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e0e0e0; }
-        .eh { background: #1a1a2e; padding: 32px 24px; text-align: center; }
-        .eh img { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; padding: 8px; }
-        .eh h1 { color: #ffffff; font-size: 22px; margin: 12px 0 4px; font-weight: 700; letter-spacing: 1px; }
-        .eh p { color: #a0a8c0; font-size: 13px; margin: 0; }
-        .banner { width: 100%; height: 200px; object-fit: cover; display: block; }
-        .badge { background: #16213e; display: inline-block; padding: 6px 16px; border-radius: 20px; margin: 20px auto 0; }
-        .badge span { color: #4fc3f7; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-        .eb { padding: 32px 32px 24px; }
-        .eb h2 { font-size: 20px; color: #1a1a2e; margin: 0 0 8px; font-weight: 700; }
-        .eb .intro { color: #555; font-size: 15px; line-height: 1.7; margin: 0 0 24px; }
-        .info-card { background: #f0f4ff; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; border-left: 4px solid #3a7bd5; }
-        .info-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #dde5f5; }
-        .info-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .info-icon { width: 36px; height: 36px; border-radius: 8px; background: #3a7bd5; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .info-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .info-label { font-size: 11px; color: #7a8ab0; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
-        .info-value { font-size: 15px; color: #1a1a2e; font-weight: 600; margin: 2px 0 0; }
-        .alert { background: #fff8e1; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; border-left: 4px solid #f5a623; display: flex; align-items: flex-start; gap: 12px; }
-        .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-        .alert p { font-size: 14px; color: #7a5c00; margin: 0; line-height: 1.5; }
-        .cta { text-align: center; margin: 24px 0; }
-        .cta a { background: #3a7bd5; color: #ffffff; text-decoration: none; padding: 14px 36px; border-radius: 8px; font-size: 15px; font-weight: 600; display: inline-block; }
-        .divider { border: none; border-top: 1px solid #eeeeee; margin: 24px 0; }
-        .closing { font-size: 14px; color: #555; line-height: 1.7; margin: 0 0 8px; }
-        .sig { font-size: 14px; color: #1a1a2e; font-weight: 700; margin: 0; }
-        .ef { background: #1a1a2e; padding: 20px 24px; text-align: center; }
-        .ef p { color: #a0a8c0; font-size: 12px; margin: 4px 0; line-height: 1.6; }
-        .ef a { color: #4fc3f7; text-decoration: none; }
-    </style>
 </head>
 <body>
-<div class="ew">
-    <div class="ec">
-        <div class="eh">
-            <img src="https://cdn-icons-png.flaticon.com/512/2972/2972149.png" alt="Auto Escola N-116">
-            <h1>Auto Escola N-116</h1>
-            <p>Sistema de notificações automáticas</p>
-        </div>
+<table border="0"
+       cellpadding="0"
+       cellspacing="0"
+       class="email-wrapper"
+       width="100%">
+    <tr>
+        <td align="center">
+            <table border="0"
+                   cellpadding="0"
+                   cellspacing="0"
+                   class="email-container">
+                <tr>
+                    <td class="email-header">
+                        <img alt="logo"
+                             src="https://cdn-icons-png.flaticon.com/512/2972/2972149.png"
+                             width="80">
+                        <h1>Auto Escola N-116</h1>
+                        <p>Sistema de Notificações Automáticas</p>
+                    </td>
+                </tr>
 
-        <img class="banner" src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80" alt="Instrução de direção">
-
-        <div style="text-align:center; padding: 0 24px;">
-            <div class="badge"><span>&#10003; Instrução confirmada</span></div>
-        </div>
-
-        <div class="eb">
-            <h2>Olá, {{nomeAluno}}!</h2>
-            <p class="intro">Sua instrução de direção foi agendada com sucesso. Confira os detalhes abaixo e prepare-se para mais uma etapa na sua jornada como motorista!</p>
-
-            <div class="info-card">
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    </div>
-                    <div>
-                        <p class="info-label">Data</p>
-                        <p class="info-value">{{data}}</p>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div>
-                        <p class="info-label">Horário</p>
-                        <p class="info-value">{{hora}}</p>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </div>
-                    <div>
-                        <p class="info-label">Instrutor</p>
-                        <p class="info-value">{{nomeInstrutor}}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alert">
-                <div class="alert-icon">&#9888;</div>
-                <p>Por favor, esteja presente no local combinado com <strong>10 minutos de antecedência</strong>. Traga seus documentos pessoais e sua permissão de aprendizagem.</p>
-            </div>
-
-            <div class="cta">
-                <a href="#">Entrar em contato</a>
-            </div>
-
-            <hr class="divider">
-
-            <p class="closing">Se precisar reagendar ou tiver alguma dúvida, não hesite em nos contatar. Estamos à disposição!</p>
-            <p class="closing">Atenciosamente,</p>
-            <p class="sig">Equipe Auto Escola N-116</p>
-        </div>
-
-        <div class="ef">
-            <p>&#169; 2026 Auto Escola N-116 &mdash; Todos os direitos reservados</p>
-            <p><a href="#">Cancelar inscrição</a> &nbsp;|&nbsp; <a href="#">Política de privacidade</a></p>
-        </div>
-    </div>
-</div>
+                <tr>
+                    <td>
+                        <img alt="Instrutor e aluno"
+                             class="main-image"
+                             src="https://png.pngtree.com/png-vector/20191022/ourlarge/pngtree-man-in-driving-school-vector-training-car-successful-pass-exam-learning-png-image_1841795.jpg">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="content">
+                        <h2>
+                            Nova instrução <span th:text="${acao}"></span>
+                        </h2>
+                        <p>
+                            Uma nova instrução foi
+                            <strong th:text="${acao}"></strong>
+                            no sistema. Aqui estão os detalhes:
+                        </p>
+                        <table class="data-table">
+                            <tr>
+                                <td><strong>ID:</strong> <span th:text="${id}"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Aluno:</strong> <span th:text="${aluno}"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Instrutor:</strong> <span th:text="${instrutor}"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data:</strong> <span th:text="${data}"></span></td>
+                            </tr>
+                        </table>
+                        <div class="button-container">
+                            <a th:href="'https://autoescolan116.com.br/instrucao/' + ${id}">
+                                Ver instrução no sistema
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="footer">
+                        <p>
+                            2026 Auto Escola N-116 - Todos os direitos reservados.<br>
+                            Esta é uma mensagem automática. Por favor, não responda.
+                        </p>
+                        <p class="footer-icons">
+                            <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png">
+                            <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
