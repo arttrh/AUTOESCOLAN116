@@ -2,15 +2,13 @@ package br.com.senain116.autoescolan116.config.rabbitmq;
 
 import br.com.senain116.autoescolan116.application.core.service.EmailNotificacaoService;
 import br.com.senain116.autoescolan116.application.port.out.EmailEventPublisher;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.TemplateEngine;
 
 @Configuration
 public class RabbitMQConfig {
@@ -38,7 +36,7 @@ public class RabbitMQConfig {
 
     //Tranformando EmailNotificacaoService em um Bean
     @Bean
-    public EmailNotificacaoService emailNotificacaoService(EmailEventPublisher emailEventPublisher){
-        return new EmailNotificacaoService(emailEventPublisher);
+    public EmailNotificacaoService emailNotificacaoService(EmailEventPublisher emailEventPublisher, TemplateEngine templateEngine){
+        return new EmailNotificacaoService(emailEventPublisher, templateEngine);
     }
 }
