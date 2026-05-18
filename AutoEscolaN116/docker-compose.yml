@@ -3,12 +3,17 @@ services:
     image: mysql:latest
     container_name: meu-mysql
     restart: unless-stopped
-    env_file: .env
+    env_file: ../.env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
+      MYSQL_URL: jdbc:mysql://db:3306/autoescolan116
+      MYSQL_DEV_USER: ${MYSQL_USER}
+      MYSQL_DEV_PASS: ${MYSQL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      E_MAIL: ${E_MAIL}
+      SENHA_APP: ${SENHA_APP}
     ports:
       - "3306:3306"
     volumes:
