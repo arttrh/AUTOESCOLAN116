@@ -11,7 +11,9 @@ import br.com.senain116.autoescolan116.application.core.usecase.UsuarioService;
 import br.com.senain116.autoescolan116.application.port.in.ModelDomainController;
 import br.com.senain116.autoescolan116.application.port.out.UsuarioRepository;
 import br.com.senain116.autoescolan116.exception.type.usuario.SenhaIncorretaException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +27,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/usuarios")
+@SecurityRequirement(name = "bearer-key")
 public class UsuarioController implements ModelDomainController<
         DadosCadastroUsuario,
         DadosListagemUsuario,
@@ -59,7 +62,7 @@ public class UsuarioController implements ModelDomainController<
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<DadosListagemUsuario>> listar(
-            @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
+            @ParameterObject @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
         return ResponseEntity.ok(service.listar(paginacao));
     }
 

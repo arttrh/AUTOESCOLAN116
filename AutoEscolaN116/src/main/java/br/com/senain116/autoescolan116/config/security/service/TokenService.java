@@ -14,7 +14,7 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
-    @Value("${api.security.token.secret}")
+    @Value("${JWT_SECRET}")
     private String secret;
     private String issue = "Auto Escola N116";
 

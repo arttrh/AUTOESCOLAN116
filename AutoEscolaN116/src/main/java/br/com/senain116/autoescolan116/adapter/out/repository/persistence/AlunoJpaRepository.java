@@ -12,10 +12,9 @@ public interface AlunoJpaRepository extends JpaRepository<AlunoEntity, Long> {
     Page<AlunoEntity> findAllByAtivoTrue(Pageable paginacao);
 
     @Query("""
-                select a.ativo
-                from Aluno a
-                where
-                a.id = :id
-            """)
-    boolean existsByIdAndAtivoTrue(Long id);
+    select a.ativo
+    from Aluno a
+    where a.id = :id
+""")
+    Boolean existsByIdAndAtivoTrue(Long id);
 }

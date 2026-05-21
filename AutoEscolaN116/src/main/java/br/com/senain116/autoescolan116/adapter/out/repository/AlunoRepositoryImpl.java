@@ -32,7 +32,8 @@ public class AlunoRepositoryImpl implements AlunoRepository {
 
     @Override
     public boolean existsByIdAndAtivoTrue(Long id) {
-        return jpaRepository.existsByIdAndAtivoTrue(id);
+        Boolean resultado = jpaRepository.existsByIdAndAtivoTrue(id);
+        return resultado != null && resultado;
     }
 
     @Override

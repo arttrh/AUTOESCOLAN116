@@ -5,6 +5,7 @@ import br.com.senain116.autoescolan116.adapter.in.controller.request.instrucao.D
 import br.com.senain116.autoescolan116.adapter.in.controller.response.instrucao.DadosDetalhamentoAgendamento;
 import br.com.senain116.autoescolan116.application.core.domain.model.Aluno;
 import br.com.senain116.autoescolan116.application.core.domain.model.Instrucao;
+import br.com.senain116.autoescolan116.application.core.service.EmailNotificacaoService;
 import br.com.senain116.autoescolan116.exception.type.aluno.AlunoNotFoundException;
 import br.com.senain116.autoescolan116.exception.type.instrucao.DadosIncompletosException;
 import br.com.senain116.autoescolan116.application.port.out.AlunoRepository;
@@ -27,18 +28,21 @@ public class AgendaDeInstrucoes {
     private final InstrucaoRepository repository;
     private final List<ValidadorAgendamento> validadoresAgendamento;
     private final InstrucaoMapper mapper;
+    private final EmailNotificacaoService emailNotificacaoService;
 
     public AgendaDeInstrucoes(
             AlunoRepository alunoRepository,
             InstrutorRepository instrutorRepository,
             InstrucaoRepository repository,
             List<ValidadorAgendamento> validadoresAgendamento,
-            InstrucaoMapper mapper) {
+            InstrucaoMapper mapper,
+            EmailNotificacaoService emailNotificacaoService) {
         this.alunoRepository = alunoRepository;
         this.instrutorRepository = instrutorRepository;
         this.repository = repository;
         this.validadoresAgendamento = validadoresAgendamento;
         this.mapper = mapper;
+        this.emailNotificacaoService = emailNotificacaoService;
     }
 
     @Transactional
@@ -63,6 +67,7 @@ public class AgendaDeInstrucoes {
                 dados.data()
         );
         Instrucao saved = repository.save(instrucao);
+        emailNotificacaoService.enviarNotificacaoInstrucao(saved, "agendada");
         return new DadosDetalhamentoAgendamento(saved);
     }
 

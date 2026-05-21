@@ -8,8 +8,10 @@ import br.com.senain116.autoescolan116.application.core.domain.model.Instrutor;
 import br.com.senain116.autoescolan116.application.core.usecase.InstrutorService;
 import br.com.senain116.autoescolan116.application.port.in.ModelDomainController;
 import br.com.senain116.autoescolan116.application.port.out.InstrutorRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +24,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/instrutores")
+@SecurityRequirement(name = "bearer-key")
 public class InstrutorController implements ModelDomainController<
         DadosCadastroInstrutor,
         DadosListagemInstrutor,
@@ -41,7 +44,7 @@ public class InstrutorController implements ModelDomainController<
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DadosDetalhamentoInstrutor> cadastrar(
-            DadosCadastroInstrutor dados, UriComponentsBuilder uriBuilder) {
+            @RequestBody DadosCadastroInstrutor dados, UriComponentsBuilder uriBuilder) {
         DadosDetalhamentoInstrutor dto = service.cadastrar(dados);
         URI uri = uriBuilder
                 .path("/instrutores/{id}")
@@ -53,7 +56,7 @@ public class InstrutorController implements ModelDomainController<
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<DadosListagemInstrutor>> listar(
-            @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
+            @ParameterObject @PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
         return ResponseEntity.ok(service.listar(paginacao));
     }
 
