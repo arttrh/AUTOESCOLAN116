@@ -1,0 +1,78 @@
+### Arquvivos de build ###
+HELP.md
+target/
+build/
+tmp/
+*.tmp
+
+### Maven ###
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/timing.properties
+
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Gradle ###
+.gradle/
+
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Logs ###
+*.log
+logs/
+srping.log
+
+### Configurações e arquivos sensíveis ###
+.env
+*.env
+*.key
+*.pem
+*.crt
+*.p12
+
+application-*.yml
+application-*.yaml
+application-*.properties
+
+!aplication.properties
+!application-dev.properties
+!application-prod.properties
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### Eclipse / STS ###
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+
+### Mac OS ###
+.DS_Store
+
+### Docker ###
+**/db_data/
+docker-volume/
