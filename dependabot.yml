@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+  - package-ecosystem: 'maven'
+    directory: "/"
+    schudule: 
+      interval: "weekly"
+
+  - package-ecosystem: 'docker'
+    directory: "/"
+    schudule: 
+      interval: "weekly"
+  
+  
