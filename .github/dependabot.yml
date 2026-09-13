@@ -3,10 +3,10 @@ version: 2
 updates:
   - package-ecosystem: 'maven'
     directory: "/"
-    schudule: 
+    schedule: 
       interval: "weekly"
 
   - package-ecosystem: 'docker'
     directory: "/"
-    schudule: 
+    schedule: 
       interval: "weekly" 
