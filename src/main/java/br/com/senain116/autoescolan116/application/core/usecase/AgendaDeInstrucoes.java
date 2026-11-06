@@ -99,7 +99,7 @@ public class AgendaDeInstrucoes {
         if (dados.especialidade() == null) {
             throw new DadosIncompletosException("Especialidade é obrigatória quando o instrutor não for informado!");
         }
-        Instrutor escolhido = instrutorRepository.escolherInstrutorAleatorioDisponivel(
+        Instrutor escolhido = instrutorRepository.escolherInstrutorDisponivel(
                 dados.especialidade(),
                 dados.data()
         );

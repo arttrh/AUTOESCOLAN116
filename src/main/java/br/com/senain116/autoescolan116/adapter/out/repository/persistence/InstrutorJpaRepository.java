@@ -26,10 +26,10 @@ public interface InstrutorJpaRepository extends JpaRepository<InstrutorEntity, L
                     where
                     a.data = :data
                     )
-                order by rand()
+                order by i.id
                 limit 1
             """)
-    InstrutorEntity escolherInstrutorAleatorioDisponivel(Especialidade especialidade, LocalDateTime data);
+    InstrutorEntity escolherInstrutorDisponivel(Especialidade especialidade, LocalDateTime data);
 
     @Query("""
                 select i.ativo

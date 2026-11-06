@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: autoescola-n116-api-arttrh
+    runtime: docker
+    repo: https://github.com/arttrh/AUTOESCOLAN116
+    branch: master
+    region: virginia
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health_check
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DB_VENDOR
+        value: postgresql
+      - key: DB_HOST
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: database
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_LOGIN
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://autoescola-n116-arttrh.vercel.app
+      - key: NOTIFICATIONS_ENABLED
+        value: "false"

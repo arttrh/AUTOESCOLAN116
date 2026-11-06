@@ -36,7 +36,7 @@ class InstrutorRepositoryTest {
 
     @Test
     @DisplayName("Expectativa: retornar null quanto não há instrutor disponível")
-    void escolherInstrutorAleatorioDisponivelCenario1() {
+    void escolherInstrutorDisponivelCenario1() {
         LocalDateTime proximaSegundaAs10 = LocalDateTime
                 .now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
@@ -58,7 +58,7 @@ class InstrutorRepositoryTest {
         );
         agendarInstrucao(instrutor, aluno, proximaSegundaAs10);
 
-        Instrutor instrutorDisponivel = repository.escolherInstrutorAleatorioDisponivel(
+        Instrutor instrutorDisponivel = repository.escolherInstrutorDisponivel(
                 Especialidade.CAMINHOES,
                 proximaSegundaAs10
         );
@@ -68,7 +68,7 @@ class InstrutorRepositoryTest {
 
     @Test
     @DisplayName("Expectativa: retornar um instrutor quanto estiver disponível")
-    void escolherInstrutorAleatorioDisponivelCenario2() {
+    void escolherInstrutorDisponivelCenario2() {
         LocalDateTime proximaSegundaAs10 = LocalDateTime
                 .now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
@@ -84,7 +84,7 @@ class InstrutorRepositoryTest {
                 Especialidade.CAMINHOES
         );
 
-        Instrutor instrutorDisponivel = repository.escolherInstrutorAleatorioDisponivel(
+        Instrutor instrutorDisponivel = repository.escolherInstrutorDisponivel(
                 Especialidade.CAMINHOES,
                 proximaSegundaAs10
         );

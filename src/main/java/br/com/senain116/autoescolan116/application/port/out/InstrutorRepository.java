@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface InstrutorRepository {
     Page<Instrutor> findAllByAtivoTrue(Pageable paginacao);
 
-    Instrutor escolherInstrutorAleatorioDisponivel(Especialidade especialidade, LocalDateTime data);
+    Instrutor escolherInstrutorDisponivel(Especialidade especialidade, LocalDateTime data);
 
     boolean isActiveById(Long id);
 

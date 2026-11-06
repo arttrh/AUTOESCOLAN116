@@ -1,6 +1,6 @@
 # Autoescola N116
 
-Gestão de alunos, instrutores, usuários e aulas. A API usa Java 25, Spring Boot 4.1.1, JPA e MySQL 8.4. A interface usa HTML, CSS e JavaScript, sem framework e sem etapa de compilação.
+Gestão de alunos, instrutores, usuários e aulas. A API usa Java 25, Spring Boot 4.1.1 e JPA, com MySQL localmente e PostgreSQL no Render. A interface usa HTML, CSS e JavaScript, sem framework e sem etapa de compilação.
 
 A estrutura original foi mantida: controllers recebem as requisições, os casos de uso aplicam as regras, e os adapters implementam o acesso ao banco. As pastas `adapter/out` e `application/port/out` fazem parte do código e não devem ser ignoradas pelo Git.
 
@@ -43,7 +43,7 @@ A busca na tabela filtra a página atual. Os seletores de agendamento carregam a
 
 ## Testes
 
-A integração usa um banco MySQL separado, configurado por `TEST_DATABASE_URL`, `TEST_DATABASE_USERNAME` e `TEST_DATABASE_PASSWORD`.
+A integração usa um banco separado, configurado por `TEST_DATABASE_URL`, `TEST_DATABASE_USERNAME` e `TEST_DATABASE_PASSWORD`.
 
 ```sh
 ./mvnw verify

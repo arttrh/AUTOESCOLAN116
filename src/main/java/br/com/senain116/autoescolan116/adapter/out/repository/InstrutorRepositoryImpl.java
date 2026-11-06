@@ -34,11 +34,11 @@ public class InstrutorRepositoryImpl implements InstrutorRepository {
     }
 
     @Override
-    public Instrutor escolherInstrutorAleatorioDisponivel(
+    public Instrutor escolherInstrutorDisponivel(
             Especialidade especialidade,
             LocalDateTime data) {
         InstrutorEntity entity = jpaRepository
-                .escolherInstrutorAleatorioDisponivel(
+                .escolherInstrutorDisponivel(
                         especialidade,
                         data
                 );
