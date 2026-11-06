@@ -38,6 +38,7 @@ application-*.properties
 !aplication.properties
 !application-dev.properties
 !application-prod.properties
+!application-render.properties
 
 ### IntelliJ IDEA ###
 .idea
