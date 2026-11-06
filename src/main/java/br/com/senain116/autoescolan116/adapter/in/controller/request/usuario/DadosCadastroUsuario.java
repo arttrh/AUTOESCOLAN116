@@ -9,6 +9,7 @@ public record DadosCadastroUsuario(
         String login,
 
         @NotBlank
+        @jakarta.validation.constraints.Size(min=8,max=72)
         String senha,
 
         @NotNull

@@ -44,22 +44,39 @@ public class AgendaDeInstrucoes {
         this.emailNotificacaoService = emailNotificacaoService;
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    public List<DadosDetalhamentoAgendamento> listar(java.time.LocalDate inicio, java.time.LocalDate fim) {
+        if (!fim.isAfter(inicio) || java.time.temporal.ChronoUnit.DAYS.between(inicio,fim)>31) throw new IllegalArgumentException("Informe um período de até 31 dias");
+        return repository.listarEntre(inicio.atStartOfDay(),fim.atStartOfDay()).stream().map(DadosDetalhamentoAgendamento::new).toList();
+    }
+
     @Transactional
     public DadosDetalhamentoAgendamento agendarInstrucao(DadosAgendamento dados) {
-        log.info("Agendamento iniciado para aluno: {}, Intrutor: {}, Data: {}", dados.idAluno(), dados.idInstrutor(), dados.data());
+        log.info(
+                "Agendamento iniciado para Aluno: {}, Instrutor: {}, Data: {}",
+                dados.idAluno(),
+                dados.idInstrutor(),
+                dados.data()
+        );
         if (!alunoRepository.existsById(dados.idAluno())) {
-            log.warn("Tentativa de agendamento para aluno inexistente Aluno: {}", dados.idAluno());
-            //log.warn("Aluno com ID {} não encontrado para agendamento" + dados.idAluno());
+            log.warn(
+                    "Tentativa de agendamento para aluno inexistente. Aluno: {}",
+                    dados.idAluno()
+            );
+            //log.warn("Tentativa de agendamento para aluno inexistente. Aluno: " + dados.idAluno());
             throw new AlunoNotFoundException("ID do aluno informado não existe!");
         }
         if (dados.idInstrutor() != null && !instrutorRepository.existsById(dados.idInstrutor())) {
-            log.warn("Tentativa de agendamento para instrutor inexistente Instrutor: {}", dados.idInstrutor());
+            log.warn(
+                    "Tentativa de agendamento com instrutor inexistente. Instrutor: {}",
+                    dados.idInstrutor()
+            );
             throw new InstrutorNotFoundException("ID do instrutor informado não existe!");
         }
 
         //Validações
+        log.debug("Executando os validadores do agentamento.");
         validadoresAgendamento.forEach(v -> v.validar(dados));
-        log.debug("Validações concluídas para agendamento do aluno: {}, Intrutor: {}, Data: {}", dados.idAluno(), dados.idInstrutor(), dados.data());
 
         Aluno aluno = alunoRepository.getReferenceById(dados.idAluno());
         Instrutor instrutor = escolherInstrutor(dados);
@@ -71,7 +88,7 @@ public class AgendaDeInstrucoes {
         );
         Instrucao saved = repository.save(instrucao);
         emailNotificacaoService.enviarNotificacaoInstrucao(saved, "agendada");
-        log.info("Agendamento concluído para aluno: {}, Intrutor: {}, Data: {}", dados.idAluno(), dados.idInstrutor(), dados.data());
+        log.info("Instrução agendada com sucesso!");
         return new DadosDetalhamentoAgendamento(saved);
     }
 
@@ -82,9 +99,11 @@ public class AgendaDeInstrucoes {
         if (dados.especialidade() == null) {
             throw new DadosIncompletosException("Especialidade é obrigatória quando o instrutor não for informado!");
         }
-        return instrutorRepository.escolherInstrutorAleatorioDisponivel(
+        Instrutor escolhido = instrutorRepository.escolherInstrutorAleatorioDisponivel(
                 dados.especialidade(),
                 dados.data()
         );
+        if (escolhido==null) throw new br.com.senain116.autoescolan116.exception.type.instrucao.ValidacaoException("Nenhum instrutor disponível para este horário e especialidade");
+        return escolhido;
     }
 }

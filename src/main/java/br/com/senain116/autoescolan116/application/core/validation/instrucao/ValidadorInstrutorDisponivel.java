@@ -14,6 +14,7 @@ public class ValidadorInstrutorDisponivel implements ValidadorAgendamento {
 
     @Override
     public void validar(DadosAgendamento dados) {
+        if (dados.idInstrutor()==null) return;
         boolean ocupado = instrucaoRepository.existsByInstrutorIdAndData(dados.idInstrutor(), dados.data());
 
         if (ocupado) {

@@ -58,6 +58,7 @@ public class SecurityConfig {
                             configuration.setAllowCredentials(true);
                             return configuration;
                         }))
+                .exceptionHandling(errors -> errors.authenticationEntryPoint((request,response,ex) -> response.sendError(401)))
                 .sessionManagement(sm -> sm
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

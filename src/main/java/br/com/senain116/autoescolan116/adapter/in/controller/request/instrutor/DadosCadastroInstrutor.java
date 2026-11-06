@@ -27,6 +27,6 @@ public record DadosCadastroInstrutor(
         @NotNull
         Especialidade especialidade,
 
-        @Valid
+        @Valid @jakarta.validation.constraints.NotNull
         DadosEndereco endereco) {
 }

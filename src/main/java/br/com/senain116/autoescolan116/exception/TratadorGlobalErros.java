@@ -1,84 +1,63 @@
 package br.com.senain116.autoescolan116.exception;
-
 import br.com.senain116.autoescolan116.exception.type.aluno.AlunoNotFoundException;
-import br.com.senain116.autoescolan116.exception.type.instrucao.DadosIncompletosException;
-import br.com.senain116.autoescolan116.exception.type.instrucao.ValidacaoException;
+import br.com.senain116.autoescolan116.exception.type.instrucao.*;
 import br.com.senain116.autoescolan116.exception.type.instrutor.InstrutorNotFoundException;
-import br.com.senain116.autoescolan116.exception.type.usuario.SenhaIncorretaException;
-import br.com.senain116.autoescolan116.exception.type.usuario.UsuarioNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import br.com.senain116.autoescolan116.exception.type.usuario.*;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
-import java.util.stream.Stream;
-
+import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestControllerAdvice
 public class TratadorGlobalErros {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Void> tratarNotFound() {
-        return ResponseEntity.notFound().build();
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Stream<DadosBadRequest>> tratarBadRequest(MethodArgumentNotValidException ex) {
-        log.warn("Requisição com dados inválidos: {}", ex.getFieldErrors()
+    public ResponseEntity<List<Map<String, String>>> dadosInvalidos(
+        MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest().body(ex.getFieldErrors()
                 .stream()
-                .map(FieldError::getDefaultMessage)
+                .map(e
+                    -> Map.of("field", e.getField(), "message",
+                        Objects.toString(e.getDefaultMessage(), "Valor inválido")))
                 .toList());
-        List<FieldError> erros = ex.getFieldErrors();
-        return ResponseEntity
-                .badRequest()
-                .body(erros.stream().map(DadosBadRequest::new));
     }
-
-    @ExceptionHandler(SenhaIncorretaException.class)
-    public ResponseEntity<String> tratarSenhaIncorreta(SenhaIncorretaException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    @ExceptionHandler({org.springframework.http.converter.HttpMessageNotReadableException.class,
+        org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+        org.springframework.web.bind.MissingServletRequestParameterException.class})
+    public ResponseEntity<Map<String, String>> requisicaoInvalida() {
+        return ResponseEntity.badRequest().body(
+            Map.of("message", "Confira os campos e o formato dos dados enviados."));
     }
-
-    @ExceptionHandler(UsuarioNotFoundException.class)
-    public ResponseEntity<String> tratarUsuarioNotFound(UsuarioNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    @ExceptionHandler({AlunoNotFoundException.class, InstrutorNotFoundException.class,
+        UsuarioNotFoundException.class, jakarta.persistence.EntityNotFoundException.class})
+    public ResponseEntity<Map<String, String>> naoEncontrado(RuntimeException ex) {
+        return ResponseEntity.status(404).body(Map.of("message", "Cadastro não encontrado"));
     }
-
-    @ExceptionHandler(InstrutorNotFoundException.class)
-    public ResponseEntity<String> tratarInstrutorNotFound(InstrutorNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    @ExceptionHandler({DadosIncompletosException.class, ValidacaoException.class,
+        SenhaIncorretaException.class, IllegalArgumentException.class})
+    public ResponseEntity<Map<String, String>> validacao(RuntimeException ex) {
+        return ResponseEntity.unprocessableEntity().body(Map.of("message", ex.getMessage()));
     }
-
-    @ExceptionHandler(AlunoNotFoundException.class)
-    public ResponseEntity<String> tratarAlunoNotFound(AlunoNotFoundException ex) {
-        log.warn("Aluno não encontrado!");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> duplicado() {
+        return ResponseEntity.status(409).body(Map.of(
+            "message", "Já existe cadastro com estes dados. Confira e-mail, CPF, CNH ou usuário."));
     }
-
-    @ExceptionHandler(DadosIncompletosException.class)
-    public ResponseEntity<String> TratarDadosIncompletos(DadosIncompletosException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    @ExceptionHandler(org.springframework.security.core.AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> login() {
+        return ResponseEntity.status(401).body(Map.of("message", "Credenciais inválidas"));
     }
-
-    @ExceptionHandler(ValidacaoException.class)
-    public ResponseEntity<String> TratarValidacao(ValidacaoException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> negado() {
+        return ResponseEntity.status(403).body(Map.of("message", "Acesso negado"));
     }
-
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> tratarDadosIncompletos(Exception ex) {
-        log.error("Erro inesperado: ", ex);
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
-
-    private record DadosBadRequest(String field, String message) {
-        public DadosBadRequest(FieldError erro) {
-            this(erro.getField(), erro.getDefaultMessage());
-        }
+    public ResponseEntity<Map<String, String>> inesperado(Exception ex) {
+        log.error("Falha interna na operação", ex);
+        return ResponseEntity.internalServerError().body(
+            Map.of("message", "Não foi possível concluir a operação."));
     }
 }

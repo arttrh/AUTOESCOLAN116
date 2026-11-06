@@ -22,6 +22,13 @@ public class InstrucaoController implements InstrucaoPort {
         this.agenda = agenda;
     }
 
+    @org.springframework.web.bind.annotation.GetMapping
+    public java.util.List<DadosDetalhamentoAgendamento> listar(
+        @org.springframework.web.bind.annotation.RequestParam java.time.LocalDate inicio,
+        @org.springframework.web.bind.annotation.RequestParam java.time.LocalDate fim) {
+        return agenda.listar(inicio,fim);
+    }
+
     @Override
     @PostMapping
     public ResponseEntity<DadosDetalhamentoAgendamento> agendar(

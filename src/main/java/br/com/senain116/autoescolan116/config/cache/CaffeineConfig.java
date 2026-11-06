@@ -8,19 +8,17 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
-
 @Configuration
 public class CaffeineConfig {
-
     @Bean
-    public CacheManager cacheManager(){
-       CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-       cacheManager.setCaffeine(
-               Caffeine.newBuilder()
-                       .maximumSize(1000)
-                       .expireAfterWrite(Duration.ofMinutes(30))
-                       .recordStats()
-               );
-         return cacheManager;
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+        cacheManager.setCaffeine(
+                Caffeine.newBuilder()
+                        .maximumSize(1000)
+                        .expireAfterWrite(Duration.ofMinutes(30))
+                        .recordStats()
+        );
+        return cacheManager;
     }
 }

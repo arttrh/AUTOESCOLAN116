@@ -7,7 +7,6 @@ tmp/
 
 ### Maven ###
 .mvn/wrapper/maven-wrapper.jar
-.mvn/wrapper/maven-wrapper.properties
 .mvn/timing.properties
 
 !**/src/main/**/target/
@@ -45,7 +44,7 @@ application-*.properties
 *.iws
 *.iml
 *.ipr
-out/
+/out/
 
 ### Eclipse / STS ###
 .apt_generated/
@@ -76,3 +75,6 @@ Desktop.ini
 ### Docker ###
 **/db_data/
 docker-volume/
+!src/test/resources/application-test.properties
+!.env.example
+frontend/.vercel/

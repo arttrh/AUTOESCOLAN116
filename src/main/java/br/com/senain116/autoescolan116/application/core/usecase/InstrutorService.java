@@ -10,7 +10,6 @@ import br.com.senain116.autoescolan116.application.core.domain.model.Instrutor;
 import br.com.senain116.autoescolan116.application.port.out.InstrutorRepository;
 import br.com.senain116.autoescolan116.exception.type.instrutor.InstrutorNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,8 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @Slf4j
+@Service
 public class InstrutorService {
     private final InstrutorRepository repository;
     private final InstrutorMapper mapper;
@@ -42,7 +41,6 @@ public class InstrutorService {
         return mapper.toDetailsDTO(saved);
     }
 
-
     public Page<DadosListagemInstrutor> listarInstrutores(Pageable paginacao) {
         return repository
                 .findAllByAtivoTrue(paginacao)
@@ -51,7 +49,7 @@ public class InstrutorService {
 
     @Cacheable(value = "instrutores", key = "#id")
     public DadosDetalhamentoInstrutor detalharInstrutor(Long id) {
-        log.info("Consultando no banco de dados");
+        log.info("Consultando o banco de dados.");
         Instrutor instrutor = repository.findById(id)
                 .orElseThrow(() ->
                         new InstrutorNotFoundException("ID do instrutor informado não existe!"));
@@ -83,5 +81,14 @@ public class InstrutorService {
                         new InstrutorNotFoundException("ID do instrutor informado não existe!"));
         instrutor.excluir();
         repository.save(instrutor);
+    }
+
+    public DadosDetalhamentoInstrutor reativarInstrutor(Long id) {
+        Instrutor instrutor = repository.findById(id)
+                .orElseThrow(() ->
+                        new InstrutorNotFoundException("ID do instrutor informado não existe!"));
+        instrutor.reativar();
+        Instrutor saved = repository.save(instrutor);
+        return mapper.toDetailsDTO(saved);
     }
 }

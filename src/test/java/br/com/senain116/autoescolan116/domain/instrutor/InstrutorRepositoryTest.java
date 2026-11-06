@@ -23,25 +23,16 @@ import java.time.temporal.TemporalAdjusters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@org.springframework.boot.test.context.SpringBootTest
+@org.springframework.transaction.annotation.Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class InstrutorRepositoryTest {
-    private final InstrutorRepository repository;
-    private final TestEntityManager entityManager;
-    private final AlunoMapper alunoMapper;
-    private final InstrutorMapper instrutorMapper;
-
-    public InstrutorRepositoryTest(
-            InstrutorRepository repository,
-            TestEntityManager entityManager,
-            AlunoMapper alunoMapper,
-            InstrutorMapper instrutorMapper) {
-        this.repository = repository;
-        this.entityManager = entityManager;
-        this.alunoMapper = alunoMapper;
-        this.instrutorMapper = instrutorMapper;
-    }
+    @org.springframework.beans.factory.annotation.Autowired private InstrutorRepository repository;
+    @org.springframework.beans.factory.annotation.Autowired private br.com.senain116.autoescolan116.application.port.out.AlunoRepository alunos;
+    @org.springframework.beans.factory.annotation.Autowired private br.com.senain116.autoescolan116.application.port.out.InstrucaoRepository instrucoes;
+    @org.springframework.beans.factory.annotation.Autowired private AlunoMapper alunoMapper;
+    @org.springframework.beans.factory.annotation.Autowired private InstrutorMapper instrutorMapper;
 
     @Test
     @DisplayName("Expectativa: retornar null quanto não há instrutor disponível")
@@ -98,7 +89,7 @@ class InstrutorRepositoryTest {
                 proximaSegundaAs10
         );
 
-        assertThat(instrutorDisponivel).isEqualTo(instrutor);
+        assertThat(instrutorDisponivel.getId()).isEqualTo(instrutor.getId());
     }
 
     private Instrutor cadastrarInstrutor(
@@ -112,8 +103,7 @@ class InstrutorRepositoryTest {
                 cnh,
                 especialidade
         ));
-        entityManager.persist(instrutor);
-        return instrutor;
+        return repository.save(instrutor);
     }
 
     private DadosCadastroInstrutor dadosCadastroInstrutor(
@@ -140,8 +130,7 @@ class InstrutorRepositoryTest {
                 email,
                 cpf
         )));
-        entityManager.persist(aluno);
-        return aluno;
+        return alunos.save(aluno);
     }
 
     private DadosCadastroAluno dadosCadastroAluno(
@@ -179,6 +168,6 @@ class InstrutorRepositoryTest {
                 instrutor,
                 data
         );
-        entityManager.persist(instrucao);
+        instrucoes.save(instrucao);
     }
 }

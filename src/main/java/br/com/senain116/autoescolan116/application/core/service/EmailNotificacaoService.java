@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EmailNotificacaoService {
+    @org.springframework.beans.factory.annotation.Value("${app.notifications.enabled:false}")
+    private boolean enabled;
     private final EmailEventPublisher emailEventPublisher;
     private final TemplateEngine templateEngine;
 
@@ -21,8 +23,8 @@ public class EmailNotificacaoService {
     }
 
     public void enviarNotificacaoInstrucao(Instrucao instrucao, String acao) {
+        if (!enabled) return;
         List<String> emails = List.of(
-                "contato@example.com",
                 instrucao.getAluno().getEmail(),
                 instrucao.getInstrutor().getEmail()
         );

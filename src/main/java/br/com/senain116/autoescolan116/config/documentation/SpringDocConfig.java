@@ -25,14 +25,7 @@ public class SpringDocConfig {
                 .info(new Info()
                         .title("Auto Escola N-116")
                         .description("API de Back-End da Auto Escola N-116.")
-                        .contact(new Contact()
-                                .name("SENAI")
-                                .email("contato@example.com")
-                        )
-                        .license(new License()
-                                .name("Apache 2.0")
-                                .url("http://autoescolan116.com.br/api/license")
-                        )
+
                 );
     }
 }

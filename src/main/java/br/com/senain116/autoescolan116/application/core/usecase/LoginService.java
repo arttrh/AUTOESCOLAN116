@@ -45,6 +45,6 @@ public class LoginService {
         UsuarioEntity entity = (UsuarioEntity) jpaRepository.findByLogin(login);
         Usuario usuario = entityMapper.toDomain(entity);
         String tokenJWT = tokenService.gerarToken(usuario);
-        return new DadosTokenJWT(tokenJWT);
+        return new DadosTokenJWT(tokenJWT, usuario.getId(), usuario.getLogin(), usuario.getPerfil());
     }
 }

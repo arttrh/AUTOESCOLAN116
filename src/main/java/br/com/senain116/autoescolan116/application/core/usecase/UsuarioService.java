@@ -78,10 +78,11 @@ public class UsuarioService {
     }
 
     @Transactional
-    public DadosSucesso atualizarSenhaUsuario(DadosAtualizacaoSenha dados) {
+    public DadosSucesso atualizarSenhaUsuario(DadosAtualizacaoSenha dados, String login) {
         Usuario usuario = repository.findById(dados.id())
                 .orElseThrow(() ->
                         new UsuarioNotFoundException("ID do usuário informado não existe!"));
+        if (!usuario.getLogin().equals(login)) throw new org.springframework.security.access.AccessDeniedException("Acesso negado");
         if (!encoder.matches(dados.senhaAntiga(), usuario.getSenha())) {
             throw new SenhaIncorretaException("Senha incorreta!");
         }

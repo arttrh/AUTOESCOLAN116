@@ -12,6 +12,6 @@ public record DadosAtualizacaoSenha(
         String senhaAntiga,
 
         @NotBlank
-        @Pattern(regexp = "\\d{8}")
+        @jakarta.validation.constraints.Size(min=8,max=72)
         String senhaNova) {
 }

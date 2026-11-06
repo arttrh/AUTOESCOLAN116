@@ -22,6 +22,6 @@ public record DadosCadastroAluno(
         @Pattern(regexp = "\\d{9,11}")
         String cpf,
 
-        @Valid
+        @Valid @jakarta.validation.constraints.NotNull
         DadosEndereco endereco) {
 }

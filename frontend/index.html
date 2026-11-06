@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#efefed" />
+    <title>N116 — Autoescola</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <script type="module" src="assets/app.js"></script>
+  </head>
+  <body>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <section id="login-screen" class="login-screen">
+      <div class="login-cover">
+        <a class="brand" href="./" aria-label="Autoescola N116"
+          ><span class="brand-mark">N116<span class="brand-dot">.</span></span
+          ><span class="brand-description"
+            >Autoescola<br />Gestão de aulas</span
+          ></a
+        >
+        <div class="cover-copy">
+          <p class="eyebrow">O próximo passo começa aqui.</p>
+          <h1>Novos<br />caminhos.</h1>
+          <p class="cover-description">
+            Mais organização para ensinar.<br />Mais espaço para ir além.
+          </p>
+        </div>
+        <div class="cover-bottom">
+          <span>Alunos. Instrutores. Conexões.</span
+          ><span aria-hidden="true">↗</span>
+        </div>
+        <span class="cover-watermark" aria-hidden="true">N116</span>
+      </div>
+      <main id="conteudo" class="login-content">
+        <div class="login-card">
+          <p class="section-overline">Seu espaço de trabalho</p>
+          <h2>Bom ter<br />você por aqui.</h2>
+          <p class="muted">Entre para acompanhar a sua autoescola.</p>
+          <form id="login-form">
+            <label for="login">Usuário</label
+            ><input
+              id="login"
+              name="login"
+              autocomplete="username"
+              required
+              placeholder="Seu usuário"
+            />
+            <label for="senha">Senha</label>
+            <div class="password-field">
+              <input
+                id="senha"
+                name="senha"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Sua senha"
+              /><button
+                id="mostrar-senha"
+                type="button"
+                class="text-button"
+                aria-label="Mostrar senha"
+                aria-pressed="false"
+              >
+                Mostrar
+              </button>
+            </div>
+            <p id="login-error" class="form-message" role="alert" hidden></p>
+            <button class="button button-dark login-submit" type="submit">
+              <span>Entrar no sistema</span><span aria-hidden="true">↗</span>
+            </button>
+          </form>
+          <p class="login-help">
+            Acesso exclusivo da equipe.<br />Precisa de uma conta? Fale com o
+            administrador.
+          </p>
+        </div>
+        <div class="login-foot">
+          <span>Autoescola N116</span><span>Feito para seguir em frente.</span>
+        </div>
+      </main>
+    </section>
+    <div id="workspace" class="workspace" hidden>
+      <aside class="sidebar" id="sidebar">
+        <a class="brand brand-small" href="#agenda"
+          ><span class="brand-mark">N116<span class="brand-dot">.</span></span
+          ><span class="brand-description">Autoescola</span></a
+        >
+        <p class="nav-caption">Espaço de trabalho</p>
+        <nav aria-label="Principal">
+          <a href="#agenda" data-view="agenda"
+            ><span class="nav-symbol" aria-hidden="true">▦</span>Agenda<span
+              class="nav-arrow"
+              aria-hidden="true"
+              >↗</span
+            ></a
+          ><a href="#alunos" data-view="alunos"
+            ><span class="nav-symbol" aria-hidden="true">○</span>Alunos</a
+          ><a href="#instrutores" data-view="instrutores"
+            ><span class="nav-symbol" aria-hidden="true">◇</span>Instrutores</a
+          ><a href="#usuarios" data-view="usuarios" id="users-nav"
+            ><span class="nav-symbol" aria-hidden="true">⊞</span>Equipe</a
+          ><a href="#configuracoes" data-view="configuracoes"
+            ><span class="nav-symbol" aria-hidden="true"
+              ><svg
+                viewBox="0 0 24 24"
+                width="19"
+                height="19"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 21v-3a7 7 0 0 1 14 0v3" /></svg></span
+            >Minha conta</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <p class="sidebar-note">Organização que<br />abre caminhos.</p>
+          <span class="footer-wordmark" aria-hidden="true">N116</span>
+        </div>
+      </aside>
+      <div class="workspace-main">
+        <header class="topbar">
+          <button
+            type="button"
+            class="icon-button mobile-toggle"
+            id="mobile-toggle"
+            aria-label="Abrir navegação"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg></button
+          ><span class="breadcrumb"
+            >Autoescola <span aria-hidden="true">/</span>
+            <span id="breadcrumb-current">Agenda</span></span
+          >
+          <div class="account-bar">
+            <span id="connection-status" class="connection-status"
+              >Conectando</span
+            ><button id="logout" class="text-button" type="button">
+              Sair ↗
+            </button>
+          </div>
+        </header>
+        <main id="app-content" class="sheet" tabindex="-1">
+          <div class="page-heading">
+            <div>
+              <p class="section-overline" id="page-kicker">
+                Um dia de cada vez.
+              </p>
+              <h1 id="page-title">Agenda.</h1>
+              <p class="muted" id="page-description">
+                Organize as próximas aulas e acompanhe cada caminho.
+              </p>
+            </div>
+            <button
+              id="primary-action"
+              class="button button-dark"
+              type="button"
+            >
+              <span aria-hidden="true">+</span
+              ><span id="primary-label">Agendar aula</span>
+            </button>
+          </div>
+          <div id="page-message" class="notice" role="status" hidden></div>
+          <section id="agenda-view" aria-label="Agenda de aulas">
+            <div class="summary-strip">
+              <div>
+                <span class="muted">Aulas no período</span
+                ><strong id="count-aulas">—</strong>
+              </div>
+              <div>
+                <span class="muted">Alunos ativos</span
+                ><strong id="count-alunos">—</strong>
+              </div>
+              <div>
+                <span class="muted">Instrutores ativos</span
+                ><strong id="count-instrutores">—</strong>
+              </div>
+              <div class="summary-date">
+                <span class="muted">Hoje</span
+                ><strong id="today-label"></strong>
+              </div>
+            </div>
+            <div class="agenda-toolbar">
+              <div>
+                <h2>Sua agenda</h2>
+                <p class="muted" id="period-label"></p>
+              </div>
+              <div class="week-controls">
+                <button
+                  type="button"
+                  class="icon-button"
+                  id="previous-week"
+                  aria-label="Semana anterior"
+                >
+                  ←</button
+                ><button type="button" class="text-button" id="this-week">
+                  Hoje</button
+                ><button
+                  type="button"
+                  class="icon-button"
+                  id="next-week"
+                  aria-label="Próxima semana"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+            <div
+              id="week-days"
+              class="week-days"
+              role="group"
+              aria-label="Selecione um dia"
+            ></div>
+            <div class="agenda-grid">
+              <section class="schedule-panel">
+                <div class="section-heading">
+                  <h3 id="selected-day-label">Aulas do dia</h3>
+                  <span class="small muted" id="day-count"></span>
+                </div>
+                <div
+                  id="schedule-list"
+                  class="schedule-list"
+                  aria-live="polite"
+                ></div>
+              </section>
+              <aside class="day-rail">
+                <section class="rail-section">
+                  <p class="section-overline">A equipe no caminho</p>
+                  <h3>Quem faz acontecer.</h3>
+                  <div id="instructors-preview" class="people-list"></div>
+                  <a href="#instrutores" class="inline-link"
+                    >Ver instrutores <span aria-hidden="true">↗</span></a
+                  >
+                </section>
+                <section class="rail-note">
+                  <span aria-hidden="true">↗</span>
+                  <h3>O próximo caminho<br />passa por aqui.</h3>
+                  <p>
+                    Acompanhe os horários e mantenha alunos e instrutores
+                    conectados.
+                  </p>
+                </section>
+              </aside>
+            </div>
+          </section>
+          <section id="list-view" hidden>
+            <div class="list-toolbar">
+              <label class="search-field"
+                ><span class="sr-only">Buscar pelo nome nesta página</span
+                ><input
+                  id="search"
+                  type="search"
+                  placeholder="Buscar nesta página…" /></label
+              ><span id="list-count" class="small muted"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+            <div id="list-empty" class="empty-state" hidden></div>
+            <div class="pagination">
+              <button id="prev-page" type="button" class="text-button">
+                ← Anterior</button
+              ><span id="page-info" class="small muted"></span
+              ><button id="next-page" type="button" class="text-button">
+                Próxima →
+              </button>
+            </div>
+          </section>
+          <section id="settings-view" hidden>
+            <div class="settings-layout">
+              <div>
+                <h2>Uma senha só sua.</h2>
+                <p class="muted">Atualize a senha de acesso à sua conta.</p>
+              </div>
+              <form id="password-form" class="settings-form">
+                <label for="old-password">Senha atual</label
+                ><input
+                  id="old-password"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                /><label for="new-password">Nova senha</label
+                ><input
+                  id="new-password"
+                  type="password"
+                  minlength="8"
+                  maxlength="72"
+                  autocomplete="new-password"
+                  aria-describedby="password-help"
+                  required
+                />
+                <p id="password-help" class="small muted">
+                  Use de 8 a 72 caracteres.
+                </p>
+                <label for="confirm-password">Confirmar nova senha</label
+                ><input
+                  id="confirm-password"
+                  type="password"
+                  autocomplete="new-password"
+                  required
+                />
+                <p id="password-message" class="form-message" role="status"></p>
+                <button type="submit" class="button button-dark">
+                  Atualizar senha ↗
+                </button>
+              </form>
+            </div>
+          </section>
+          <footer class="sheet-footer">
+            <span>N116 <span class="muted">/ Autoescola</span></span
+            ><span class="muted">O movimento começa com organização.</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+    <dialog id="form-dialog" class="form-dialog" aria-labelledby="dialog-title">
+      <form id="entity-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="section-overline" id="dialog-kicker">
+              Vamos organizar o próximo passo.
+            </p>
+            <h2 id="dialog-title">Novo agendamento</h2>
+          </div>
+          <button
+            id="close-dialog"
+            type="button"
+            class="icon-button"
+            aria-label="Fechar formulário"
+          >
+            ×
+          </button>
+        </div>
+        <div id="dialog-fields" class="dialog-fields"></div>
+        <p id="dialog-error" class="form-message" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button id="cancel-dialog" class="button button-light" type="button">
+            Voltar</button
+          ><button id="save-entity" class="button button-dark" type="submit">
+            Salvar ↗
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      id="confirm-dialog"
+      class="confirm-dialog"
+      aria-labelledby="confirm-title"
+    >
+      <h2 id="confirm-title">Inativar este cadastro?</h2>
+      <p id="confirm-description" class="muted">
+        O cadastro deixará de aparecer nas listas ativas.
+      </p>
+      <p id="confirm-error" class="form-message" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button id="cancel-confirm" class="button button-light" type="button">
+          Voltar</button
+        ><button id="accept-confirm" class="button button-dark" type="button">
+          Confirmar
+        </button>
+      </div>
+    </dialog>
+  </body>
+</html>

@@ -1,283 +1,65 @@
-# 🚗 Auto Escola N116
+# Autoescola N116
 
-<div align="center">
+Gestão de alunos, instrutores, usuários e aulas. A API usa Java 25, Spring Boot 4.1.1, JPA e MySQL 8.4. A interface usa HTML, CSS e JavaScript, sem framework e sem etapa de compilação.
 
-**API REST para gestão de autoescola — cadastro de alunos, instrutores e agendamento de instruções**
+A estrutura original foi mantida: controllers recebem as requisições, os casos de uso aplicam as regras, e os adapters implementam o acesso ao banco. As pastas `adapter/out` e `application/port/out` fazem parte do código e não devem ser ignoradas pelo Git.
 
-![Java](https://img.shields.io/badge/Java-25-ED8936?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+## Funcionalidades
 
-</div>
+- Login JWT com perfis `ADMIN` e `USER`.
+- Cadastro, consulta, atualização e inativação de alunos e instrutores.
+- Administração da equipe e troca da própria senha.
+- Agenda semanal alimentada pela API, sem dados fictícios no frontend.
+- Agendamento com regras de horário, antecedência, aluno ativo, instrutor ativo e disponibilidade.
+- Seleção automática de instrutor por especialidade quando seu ID não é informado na API.
 
----
+Aulas acontecem de segunda a sábado, começam em hora cheia entre 6h e 20h e exigem pelo menos 30 minutos de antecedência. Cada aluno pode ter uma aula por dia.
 
-## 📋 Sobre o Projeto
+## Executar a API localmente
 
-Uma autoescola tem três coisas pra controlar: quem são os alunos, quem são os
-instrutores e quando cada aula acontece. As duas primeiras são CRUD. A terceira
-é onde o projeto fica interessante.
+Requisitos: Docker e Docker Compose, ou Java 25, Maven e um MySQL disponível.
 
-Agendar uma instrução envolve sete regras que precisam valer ao mesmo tempo, e
-em vez de empilhar `if` dentro do service, cada uma virou uma classe própria
-implementando `ValidadorAgendamento`. Adicionar uma regra nova é criar uma
-classe — o caso de uso não muda.
-
-O outro ponto do projeto é o e-mail de confirmação. Ele **não** faz parte do
-fluxo de agendamento: a instrução é salva, uma mensagem vai pro RabbitMQ, e um
-consumidor cuida do envio. Se o SMTP do Gmail estiver lento ou fora do ar, quem
-agendou já recebeu a resposta há muito tempo.
-
-### ✨ Funcionalidades
-
-- ✅ Cadastro, listagem paginada, detalhe, atualização e exclusão de **alunos**
-- ✅ Mesmo ciclo para **instrutores**, com especialidade (motos, carros, vans, caminhões)
-- ✅ Gestão de **usuários** com troca de senha e perfis `ADMIN` / `USER`
-- ✅ Login com **JWT** — sem sessão no servidor
-- ✅ **Agendamento de instruções** com cadeia de sete validações
-- ✅ **E-mail de confirmação assíncrono** via RabbitMQ, com template Thymeleaf
-- ✅ Cache em memória com **Caffeine** nas consultas mais repetidas
-- ✅ Schema versionado com **Flyway** (7 migrations)
-- ✅ Documentação **OpenAPI/Swagger** gerada a partir do código
-- ✅ Endpoint de `health_check`
-
----
-
-## 🧩 As sete regras de agendamento
-
-Estão em `application/core/validation/instrucao/`, cada uma isolada:
-
-| Validador | Regra |
-|-----------|-------|
-| `ValidadorHorarioFuncionamento` | Nada aos domingos; primeira aula 6h, última 20h |
-| `ValidadorHorarioInteiro` | Só hora cheia — 08:00 sim, 08:30 não |
-| `ValidadorAntecedenciaMinima` | Mínimo de 30 minutos entre o pedido e a aula |
-| `ValidadorInstrutorDisponivel` | O instrutor não pode já ter aula naquele horário |
-| `ValidadorInstrutorAtivo` | Instrutor inativo não recebe agendamento |
-| `ValidadorAlunoAtivo` | Aluno inativo também não |
-| `ValidadorLimiteDiarioAluno` | Um aluno, uma instrução por dia |
-
-O caso de uso `AgendaDeInstrucoes` recebe a lista de validadores injetada e
-percorre todos antes de persistir. Ele não sabe quantos são nem o que cada um faz.
-
----
-
-## 🏗️ Arquitetura
-
-Hexagonal (ports & adapters). O domínio fica no centro e não conhece Spring:
-
-```
-application/
-├── core/
-│   ├── domain/        # Aluno, Instrutor, Instrucao, Usuario, VO Endereco, enums
-│   ├── usecase/       # AlunoService, InstrutorService, AgendaDeInstrucoes, LoginService
-│   ├── validation/    # os validadores de agendamento
-│   └── service/       # AutenticacaoService, EmailNotificacaoService
-└── port/
-    ├── in/            # o que o mundo pode pedir ao domínio
-    └── out/           # o que o domínio precisa do mundo (repositórios)
-
-adapter/
-├── in/
-│   ├── controller/    # REST: controllers, requests, responses, mappers
-│   └── rabbitmq/      # consumidor das mensagens de e-mail
-└── out/               # persistência JPA, entidades e mappers
-
-config/                # security, rabbitmq, cache, documentação
-exception/             # exceções de domínio por contexto
+```sh
+cp .env.example .env
 ```
 
-Trocar MySQL por Postgres, ou REST por outro transporte, é mexer em `adapter/` —
-`application/core/` continua igual.
+Preencha as senhas e `JWT_SECRET` no arquivo `.env`. Não use as senhas de suas contas GitHub ou Vercel. Depois execute:
 
----
-
-## 🚀 Como Rodar
-
-### Com Docker Compose (recomendado)
-
-Sobe API, MySQL e RabbitMQ juntos. A aplicação só inicia depois que os dois
-passam no healthcheck.
-
-#### 1. Clone o repositório
-
-```bash
-git clone https://github.com/arttrh/AUTOESCOLAN116.git
-cd AUTOESCOLAN116
+```sh
+docker compose up --build
 ```
 
-#### 2. Crie um arquivo `.env` na raiz
+A API fica em `http://127.0.0.1:8080`, a documentação em `/swagger-ui/index.html` e a verificação de saúde em `/health_check`.
 
-```env
-MYSQL_ROOT_PASSWORD=troque-isto
-MYSQL_DATABASE=autoescolan116
-MYSQL_USER=appuser
-MYSQL_PASSWORD=troque-isto
+`ADMIN_LOGIN` e `ADMIN_PASSWORD` criam o administrador inicial caso ele ainda não exista. A senha não é fixada no código nem nas migrations. Para executar sem Docker, forneça `DATABASE_URL` (formato JDBC), `DATABASE_USERNAME`, `DATABASE_PASSWORD`, `JWT_SECRET`, `ADMIN_LOGIN` e `ADMIN_PASSWORD` ao processo Java.
 
-JWT_SECRET=uma-chave-longa-e-aleatoria
+## Interface
 
-RABBITMQ_USER=guest
-RABBITMQ_PASS=guest
+O diretório `frontend/` é a raiz do projeto na Vercel. `vercel.json` encaminha `/api/*` para o backend; atualize o destino se o endereço do serviço mudar.
 
-# Conta de envio dos e-mails de confirmação.
-# SENHA_APP é a senha de app do Gmail, não a senha da conta.
-E_MAIL=seu-email@gmail.com
-SENHA_APP=xxxx xxxx xxxx xxxx
+O token permanece no armazenamento da aba e é removido ao sair. As páginas de equipe ficam disponíveis apenas para administradores; a API também verifica essas permissões.
+
+A busca na tabela filtra a página atual. Os seletores de agendamento carregam até 100 alunos e 100 instrutores; acima desse volume, devem ser substituídos por busca paginada.
+
+## Testes
+
+A integração usa um banco MySQL separado, configurado por `TEST_DATABASE_URL`, `TEST_DATABASE_USERNAME` e `TEST_DATABASE_PASSWORD`.
+
+```sh
+./mvnw verify
+node --test frontend/tests/*.mjs
 ```
 
-#### 3. Suba tudo
+A configuração padrão dos testes aponta para `127.0.0.1:3312/autoescola_test`. O workflow de CI cria seu próprio MySQL na porta 3306.
 
-```bash
-docker compose up -d
-```
+Os testes cobrem autenticação, contas inativas, permissões, troca de senha, cadastro, edição parcial, duplicidade, regras de agendamento, consulta por período e disponibilidade de instrutores. Os testes do frontend verificam o contrato das datas e o tratamento de erros da API.
 
-| Serviço | Endereço |
-|---------|----------|
-| API | http://localhost:8080 |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
-| Health check | http://localhost:8080/health_check |
-| RabbitMQ (painel) | http://localhost:15672 |
+## E-mails
 
----
+A integração original com RabbitMQ e SMTP está desabilitada por padrão. Ela exige `NOTIFICATIONS_ENABLED=true`, um RabbitMQ acessível e as variáveis `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME` e `SMTP_PASSWORD`. O envio externo não faz parte da validação local do fluxo principal.
 
-### Rodando local, sem container
+## Configuração e dados
 
-**Pré-requisitos:** Java 25, Maven 3.9+, MySQL 8 e RabbitMQ em pé.
+Credenciais ficam em variáveis de ambiente. Arquivos `.env`, tokens e dados reais de alunos não devem entrar no repositório. A limpeza do histórico não revoga uma credencial já exposta: a senha de aplicativo do provedor de e-mail precisa ser revogada na conta que a emitiu.
 
-```bash
-# perfil dev aponta pra localhost
-export MYSQL_DEV_USER=root
-export MYSQL_DEV_PASS=sua-senha
-export JWT_SECRET=uma-chave-longa-e-aleatoria
-export E_MAIL=seu-email@gmail.com
-export SENHA_APP="xxxx xxxx xxxx xxxx"
-
-./mvnw spring-boot:run
-```
-
-O perfil `dev` é o padrão (`spring.profiles.active=dev` em `application.properties`).
-
----
-
-## 🔌 Endpoints
-
-Todos exigem `Authorization: Bearer <token>`, menos `/login` e `/health_check`.
-
-### Autenticação
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `POST` | `/login` | Recebe credenciais e devolve o JWT |
-
-### Alunos · Instrutores
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `POST` | `/alunos` · `/instrutores` | Cadastra |
-| `GET` | `/alunos` · `/instrutores` | Lista paginado |
-| `GET` | `/alunos/{id}` · `/instrutores/{id}` | Detalha |
-| `PUT` | `/alunos` · `/instrutores` | Atualiza |
-| `DELETE` | `/alunos/{id}` · `/instrutores/{id}` | Exclui |
-
-### Usuários
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `POST` | `/usuarios` | Cadastra |
-| `GET` | `/usuarios` | Lista paginado |
-| `GET` | `/usuarios/{id}` | Detalha |
-| `PUT` | `/usuarios` | Atualiza |
-| `PATCH` | `/usuarios` | Troca a senha |
-| `DELETE` | `/usuarios/{id}` | Exclui |
-
-### Instruções
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `POST` | `/instrucoes` | Agenda uma aula — passa pelos sete validadores |
-
----
-
-## 📝 Exemplo de uso
-
-### 1. Autenticar
-
-```bash
-curl -X POST http://localhost:8080/login \
-  -H "Content-Type: application/json" \
-  -d '{"login": "admin", "senha": "sua-senha"}'
-```
-
-### 2. Agendar uma instrução
-
-```bash
-curl -X POST http://localhost:8080/instrucoes \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "idAluno": 1,
-    "idInstrutor": 1,
-    "data": "2026-09-15T09:00:00"
-  }'
-```
-
-Se a data cair num domingo, tiver minuto quebrado, faltar menos de 30 minutos ou
-o instrutor já estiver ocupado, a resposta é `400` com a mensagem do validador
-que barrou. Deu certo, o e-mail de confirmação sai pela fila.
-
----
-
-## 🛠️ Tecnologias
-
-| Tecnologia | Papel no projeto |
-|------------|------------------|
-| Java 25 | Linguagem |
-| Spring Boot 3.2 | Framework base |
-| Spring Security + java-jwt | Autenticação stateless por perfil |
-| Spring Data JPA | Persistência |
-| MySQL 8.4 | Banco de dados |
-| Flyway | Migrations versionadas |
-| RabbitMQ | Fila dos e-mails de confirmação |
-| Spring Mail + Thymeleaf | Montagem e envio do e-mail |
-| Caffeine | Cache em memória |
-| springdoc-openapi | Swagger UI |
-| Docker Compose | API, banco e broker num comando |
-
----
-
-## 🐛 Problemas comuns
-
-**A aplicação sobe e cai na hora**
-Provavelmente falta variável de ambiente. `JWT_SECRET`, `E_MAIL` e `SENHA_APP`
-não têm valor padrão em produção — confira o `.env`.
-
-**Erro de autenticação no envio de e-mail**
-`SENHA_APP` precisa ser uma *senha de app* do Google (com verificação em duas
-etapas ligada), não a senha normal da conta.
-
-**Flyway reclamando de checksum**
-Alguma migration já aplicada foi editada depois. Em desenvolvimento, derrube o
-volume do banco (`docker compose down -v`) e suba de novo.
-
-**Porta 3306 ocupada**
-Já tem um MySQL local rodando. Pare ele, ou mude a porta publicada no
-`docker-compose.yml`.
-
----
-
-## 👤 Autor
-
-**Arthur Lucas**
-GitHub: [@arttrh](https://github.com/arttrh)
-
----
-
-<div align="center">
-
-**Projeto desenvolvido durante a formação no SENAI**
-
-⭐ Se este projeto te ajudou, deixa uma estrela!
-
-</div>
+A migration V8 remove apenas o administrador de demonstração que ainda usa o hash de senha público original; a inicialização cria a conta configurada por ambiente. As migrations anteriores foram preservadas. O Flyway aplica as migrations e o Hibernate valida o schema. Não substitua migrations já executadas em um banco com dados sem planejar a compatibilidade.

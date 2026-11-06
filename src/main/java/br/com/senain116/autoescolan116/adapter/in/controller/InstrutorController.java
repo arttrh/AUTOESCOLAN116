@@ -35,6 +35,12 @@ public class InstrutorController implements ModelDomainController<
         this.service = service;
     }
 
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<DadosDetalhamentoInstrutor> reativar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.reativarInstrutor(id));
+    }
+
     @Override
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")

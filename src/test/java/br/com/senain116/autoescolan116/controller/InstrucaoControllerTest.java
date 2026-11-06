@@ -7,9 +7,7 @@ import br.com.senain116.autoescolan116.application.core.usecase.AgendaDeInstruco
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,16 +25,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureJsonTesters
+@org.springframework.test.context.ActiveProfiles("test")
 class InstrucaoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private JacksonTester<DadosAgendamento> dadosAgendamentoJson;
-
-    @Autowired
-    private JacksonTester<DadosDetalhamentoAgendamento> dadosDetalhamentoAgendamentoJson;
+    private tools.jackson.databind.ObjectMapper json;
 
     @MockitoBean //Antiga @MockBean
     private AgendaDeInstrucoes agenda;
@@ -70,20 +65,20 @@ class InstrucaoControllerTest {
         MockHttpServletResponse response = mockMvc
                 .perform(post("/instrucoes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(dadosAgendamentoJson.write(
+                        .content(json.writeValueAsString(
                                 new DadosAgendamento(
                                         1L,
                                         1L,
                                         especialidade,
                                         data
                                 )
-                        ).getJson())
+                        ))
                 )
                 .andReturn()
                 .getResponse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 
-        String jsonEsperado = dadosDetalhamentoAgendamentoJson.write(dtoResp).getJson();
+        String jsonEsperado = json.writeValueAsString(dtoResp);
         assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
     }
 }

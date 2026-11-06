@@ -86,7 +86,7 @@ public class UsuarioController implements ModelDomainController<
     @PatchMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DadosSucesso> atualizarSenha(
-            @RequestBody @Valid DadosAtualizacaoSenha dados) {
-        return ResponseEntity.ok(service.atualizarSenhaUsuario(dados));
+            @RequestBody @Valid DadosAtualizacaoSenha dados, java.security.Principal principal) {
+        return ResponseEntity.ok(service.atualizarSenhaUsuario(dados, principal.getName()));
     }
 }

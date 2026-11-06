@@ -1,0 +1,1 @@
+{"name":"autoescola-n116-interface","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs"}}
