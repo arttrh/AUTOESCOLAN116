@@ -3,6 +3,7 @@ import {
   session,
   saveSession,
   clearSession,
+  registrationPayload,
   isoDay,
   parseAppointment,
   appointmentPayload,
@@ -62,11 +63,28 @@ function showMessage(text) {
   $("page-message").textContent = text;
   $("page-message").hidden = !text;
 }
+function showAccessForm(kind) {
+  const registering = kind === "register";
+  $("login-form").hidden = registering;
+  $("register-form").hidden = !registering;
+  $("login-help").hidden = registering;
+  $("register-help").hidden = !registering;
+  $("access-title").innerHTML = registering
+    ? "Crie seu<br />acesso."
+    : "Bom ter<br />você por aqui.";
+  $("access-description").textContent = registering
+    ? "Cadastre-se para acompanhar a autoescola."
+    : "Entre para acompanhar a sua autoescola.";
+  $("login-error").hidden = true;
+  $("register-error").hidden = true;
+  (registering ? $("register-login") : $("login")).focus();
+}
 function loginScreen(message = "") {
   clearSession();
   document.querySelector(".skip-link").href = "#conteudo";
   $("workspace").hidden = true;
   $("login-screen").hidden = false;
+  showAccessForm("login");
   $("login-error").textContent = message;
   $("login-error").hidden = !message;
 }
@@ -80,33 +98,65 @@ async function handleFailure(error) {
   if (error.status === 401) loginScreen(error.message);
   else showMessage(error.message);
 }
+async function enter(login, senha) {
+  const data = await request("/login", {
+    method: "POST",
+    body: JSON.stringify({ login, senha }),
+  });
+  if (!data.tokenJWT || !data.id)
+    throw new Error("O servidor não concluiu o acesso. Tente novamente.");
+  saveSession(data);
+  showWorkspace();
+  location.hash = "agenda";
+  await navigate();
+}
 $("login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const button = event.currentTarget.querySelector('[type="submit"]');
+  const label = button.querySelector("span");
   button.disabled = true;
+  label.textContent = "Entrando…";
   $("login-error").hidden = true;
   try {
-    const data = await request("/login", {
-      method: "POST",
-      body: JSON.stringify({
-        login: $("login").value.trim(),
-        senha: $("senha").value,
-      }),
-    });
-    if (!data.tokenJWT || !data.id)
-      throw new Error("O servidor não concluiu o acesso. Tente novamente.");
-    saveSession(data);
+    await enter($("login").value.trim(), $("senha").value);
     $("senha").value = "";
-    showWorkspace();
-    location.hash = "agenda";
-    await navigate();
   } catch (error) {
     $("login-error").textContent = error.message;
     $("login-error").hidden = false;
   } finally {
     button.disabled = false;
+    label.textContent = "Entrar no sistema";
   }
 });
+$("register-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = event.currentTarget.querySelector('[type="submit"]');
+  const label = button.querySelector("span");
+  button.disabled = true;
+  label.textContent = "Criando…";
+  $("register-error").hidden = true;
+  try {
+    const data = registrationPayload(
+      $("register-login").value,
+      $("register-password").value,
+      $("register-confirm").value,
+    );
+    await request("/usuarios/cadastro", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    event.target.reset();
+    await enter(data.login, data.senha);
+  } catch (error) {
+    $("register-error").textContent = error.message;
+    $("register-error").hidden = false;
+  } finally {
+    button.disabled = false;
+    label.textContent = "Criar conta";
+  }
+});
+$("open-register").addEventListener("click", () => showAccessForm("register"));
+$("open-login").addEventListener("click", () => showAccessForm("login"));
 $("mostrar-senha").addEventListener("click", () => {
   const visible = $("senha").type === "password";
   $("senha").type = visible ? "text" : "password";

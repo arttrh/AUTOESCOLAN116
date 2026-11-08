@@ -35,8 +35,10 @@
       <main id="conteudo" class="login-content">
         <div class="login-card">
           <p class="section-overline">Seu espaço de trabalho</p>
-          <h2>Bom ter<br />você por aqui.</h2>
-          <p class="muted">Entre para acompanhar a sua autoescola.</p>
+          <h2 id="access-title">Bom ter<br />você por aqui.</h2>
+          <p id="access-description" class="muted">
+            Entre para acompanhar a sua autoescola.
+          </p>
           <form id="login-form">
             <label for="login">Usuário</label
             ><input
@@ -70,9 +72,57 @@
               <span>Entrar no sistema</span><span aria-hidden="true">↗</span>
             </button>
           </form>
-          <p class="login-help">
-            Acesso exclusivo da equipe.<br />Precisa de uma conta? Fale com o
-            administrador.
+          <form id="register-form" hidden>
+            <label for="register-login">Novo usuário</label>
+            <input
+              id="register-login"
+              name="login"
+              autocomplete="username"
+              maxlength="100"
+              required
+              placeholder="Escolha seu usuário"
+            />
+            <label for="register-password">Senha</label>
+            <input
+              id="register-password"
+              name="senha"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              aria-describedby="register-password-help"
+              required
+              placeholder="Crie uma senha"
+            />
+            <p id="register-password-help" class="field-help">
+              Use de 8 a 72 caracteres.
+            </p>
+            <label for="register-confirm">Confirmar senha</label>
+            <input
+              id="register-confirm"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              required
+              placeholder="Repita sua senha"
+            />
+            <p id="register-error" class="form-message" role="alert" hidden></p>
+            <button class="button button-dark login-submit" type="submit">
+              <span>Criar conta</span><span aria-hidden="true">↗</span>
+            </button>
+          </form>
+          <p id="login-help" class="login-help">
+            Ainda não tem acesso?
+            <button id="open-register" class="text-button" type="button">
+              Criar conta
+            </button>
+          </p>
+          <p id="register-help" class="login-help" hidden>
+            Já possui uma conta?
+            <button id="open-login" class="text-button" type="button">
+              Voltar para entrar
+            </button>
           </p>
         </div>
         <div class="login-foot">

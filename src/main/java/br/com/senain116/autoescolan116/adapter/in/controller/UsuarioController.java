@@ -2,11 +2,13 @@ package br.com.senain116.autoescolan116.adapter.in.controller;
 
 import br.com.senain116.autoescolan116.adapter.in.controller.request.usuario.DadosAtualizacaoSenha;
 import br.com.senain116.autoescolan116.adapter.in.controller.request.usuario.DadosAtualizacaoUsuario;
+import br.com.senain116.autoescolan116.adapter.in.controller.request.usuario.DadosCadastroPublico;
 import br.com.senain116.autoescolan116.adapter.in.controller.request.usuario.DadosCadastroUsuario;
 import br.com.senain116.autoescolan116.adapter.in.controller.response.usuario.DadosDetalhamentoUsuario;
 import br.com.senain116.autoescolan116.adapter.in.controller.response.usuario.DadosListagemUsuario;
 import br.com.senain116.autoescolan116.adapter.in.controller.response.usuario.DadosSucesso;
 import br.com.senain116.autoescolan116.application.core.usecase.UsuarioService;
+import br.com.senain116.autoescolan116.application.core.domain.enums.Perfil;
 import br.com.senain116.autoescolan116.application.port.in.ModelDomainController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -35,6 +37,19 @@ public class UsuarioController implements ModelDomainController<
 
     public UsuarioController(UsuarioService service) {
         this.service = service;
+    }
+
+    @PostMapping("/cadastro")
+    public ResponseEntity<DadosDetalhamentoUsuario> cadastrarPublico(
+            @RequestBody @Valid DadosCadastroPublico dados,
+            UriComponentsBuilder uriBuilder) {
+        DadosDetalhamentoUsuario dto = service.cadastrarUsuario(new DadosCadastroUsuario(
+                dados.login().trim(),
+                dados.senha(),
+                Perfil.USER
+        ));
+        URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @Override

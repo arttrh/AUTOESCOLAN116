@@ -376,6 +376,18 @@ p {
   margin-top: 24px;
   line-height: 1.7;
 }
+.login-help .text-button {
+  padding: 2px;
+  font-size: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.field-help {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
 .login-foot {
   display: flex;
   justify-content: space-between;

@@ -48,6 +48,31 @@ class FluxoAplicacaoTest {
     }
 
     @Test
+    void cadastroPublicoCriaSomenteUsuarioComum() throws Exception {
+        var dados = Map.of(
+                "login", "novo-publico",
+                "senha", "SenhaPublica123!",
+                "perfil", "ADMIN"
+        );
+        JsonNode cadastro = enviar(post("/usuarios/cadastro"), dados, null, 201);
+        assertThat(cadastro.get("perfil").asText()).isEqualTo("USER");
+        assertThat(cadastro.has("senha")).isFalse();
+
+        enviar(post("/usuarios/cadastro"), Map.of(
+                "login", "outro-publico",
+                "senha", "curta"
+        ), null, 400);
+
+        JsonNode login = enviar(post("/login"), Map.of(
+                "login", "novo-publico",
+                "senha", "SenhaPublica123!"
+        ), null, 200);
+        assertThat(login.get("perfil").asText()).isEqualTo("USER");
+        enviar(get("/usuarios"), null, login.get("tokenJWT").asText(), 403);
+        enviar(post("/usuarios/cadastro"), dados, null, 409);
+    }
+
+    @Test
     void protegerPerfisSenhasEContasInativas() throws Exception {
         enviar(get("/alunos"), null, null, 401);
         enviar(get("/alunos"), null, "token-invalido", 401);

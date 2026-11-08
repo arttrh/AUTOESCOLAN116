@@ -13,6 +13,11 @@ export function saveSession(value) {
 export function clearSession() {
   sessionStorage.removeItem(KEY);
 }
+export function registrationPayload(login, password, confirmation) {
+  if (password !== confirmation)
+    throw new Error("As senhas precisam ser iguais.");
+  return { login: login.trim(), senha: password };
+}
 export async function request(path, options = {}) {
   let response;
   try {

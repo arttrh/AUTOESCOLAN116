@@ -7,6 +7,7 @@ import {
   request,
   saveSession,
   clearSession,
+  registrationPayload,
 } from "../assets/api.js";
 test("datas de aula mantêm o dia e horário locais no contrato da API", () => {
   assert.equal(appointmentPayload("2026-11-06T09:00"), "06/11/2026 - 09:00");
@@ -31,4 +32,14 @@ test("token é enviado no header e o403 vira mensagem legível", async () => {
   assert.equal(captured.options.headers.Authorization, "Bearer teste");
   assert.equal(captured.url, "/api/usuarios");
   clearSession();
+});
+test("cadastro confirma a senha e nunca envia perfil administrativo", () => {
+  assert.deepEqual(
+    registrationPayload(" novo-usuario ", "SenhaNova123!", "SenhaNova123!"),
+    { login: "novo-usuario", senha: "SenhaNova123!" },
+  );
+  assert.throws(
+    () => registrationPayload("novo-usuario", "SenhaNova123!", "diferente"),
+    /iguais/,
+  );
 });
